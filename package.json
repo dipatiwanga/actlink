@@ -18,7 +18,10 @@
   "dependencies": {
     "drizzle-orm": "^0.45.2",
     "elysia": "^1.4.28",
-    "mysql2": "^3.20.0"
+    "mysql2": "^3.20.0",
+    "@elysiajs/swagger": "^1.2.2",
+    "@elysiajs/jwt": "^1.2.0",
+    "nanoid": "^3.3.6"
   },
   "private": true
 }
