@@ -1,29 +1,48 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
+import { authController } from './controllers/auth';
+import { linksController } from './controllers/links';
 import { db } from './db';
-import { users } from './db/schema';
+import { links } from './db/schema';
+import { eq } from 'drizzle-orm';
 
 const app = new Elysia()
-  .get('/', async () => {
-    try {
-      // Simple healthcheck by querying the database
-      const result = await db.select().from(users).limit(1);
-      return {
-        status: 'ok',
-        database: 'connected',
-        message: 'Welcome to Actlink API',
-        data_preview: result,
-      };
-    } catch (error) {
-      console.error('Database connection error:', error);
-      return {
-        status: 'partial_ok',
-        database: 'disconnected',
-        message: 'Server is running, but database connection failed. Please check your .env configuration.',
-      };
+  .get('/', () => ({
+    status: 'ok',
+    message: 'Welcome to Actlink API',
+    version: '1.0.0',
+  }))
+  // Redirection route (Public)
+  .get('/s/:shortCode', async ({ params, set }) => {
+    const { shortCode } = params;
+    
+    const [link] = await db
+      .select()
+      .from(links)
+      .where(eq(links.shortCode, shortCode))
+      .limit(1);
+
+    if (!link) {
+      set.status = 404;
+      return { success: false, message: 'Link not found' };
     }
+
+    // Increment clicks (async)
+    db.update(links)
+      .set({ clicks: (link.clicks || 0) + 1 })
+      .where(eq(links.id, link.id))
+      .execute();
+
+    set.redirect = link.url;
+  }, {
+    params: t.Object({
+      shortCode: t.String()
+    })
   })
+  // Grouped Routes
+  .use(authController)
+  .use(linksController)
   .listen(3000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🚀 Actlink API is running at ${app.server?.hostname}:${app.server?.port}`
 );
