@@ -17,3 +17,11 @@ export const links = mysqlTable('links', {
   clicks: int('clicks').default(0),
   createdAt: timestamp('created_at').defaultNow(),
 });
+
+export const clickLogs = mysqlTable('click_logs', {
+  id: serial('id').primaryKey(),
+  linkId: int('link_id').notNull(),
+  userAgent: text('user_agent'),
+  ip: varchar('ip', { length: 45 }),
+  createdAt: timestamp('created_at').defaultNow(),
+});

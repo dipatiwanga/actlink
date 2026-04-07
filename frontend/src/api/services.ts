@@ -33,4 +33,8 @@ export const linkService = {
     const response = await apiClient.delete(`/links/${id}`);
     return response.data;
   },
+  getAnalytics: async (id: number) => {
+    const response = await apiClient.get(`/analytics/${id}`);
+    return response.data;
+  },
 };

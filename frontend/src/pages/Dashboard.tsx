@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { linkService } from '../api/services';
-import { Plus, Trash2, ExternalLink, BarChart3, Link as LinkIcon, RefreshCw } from 'lucide-react';
+import { 
+  Plus, Trash2, ExternalLink, BarChart3, 
+  Link as LinkIcon, RefreshCw, ChevronDown, ChevronUp 
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AnalyticsChart } from '../components/AnalyticsChart';
 
 export const Dashboard: React.FC = () => {
   const [links, setLinks] = useState<any[]>([]);
@@ -9,6 +14,9 @@ export const Dashboard: React.FC = () => {
   const [shortCode, setShortCode] = useState('');
   const [loading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [analyzingId, setAnalyzingId] = useState<number | null>(null);
 
   const fetchLinks = async () => {
     setLoading(true);
@@ -19,6 +27,25 @@ export const Dashboard: React.FC = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAnalytics = async (id: number) => {
+    if (expandedId === id) {
+      setExpandedId(null);
+      return;
+    }
+    
+    setAnalyzingId(id);
+    try {
+      const res = await linkService.getAnalytics(id);
+      setAnalytics(res.data);
+      setExpandedId(id);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to fetch analytics');
+    } finally {
+      setAnalyzingId(null);
     }
   };
 
@@ -54,7 +81,11 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-32 px-6 pb-20 max-w-6xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6"
+      >
         <div>
           <h1 className="text-4xl font-black mb-2">My Links</h1>
           <p className="text-white/50 text-lg">Manage and track your digital presence.</p>
@@ -65,11 +96,14 @@ export const Dashboard: React.FC = () => {
         >
           <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Create Link Form */}
-        <div className="lg:col-span-1">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-1"
+        >
           <div className="glass p-8 rounded-3xl sticky top-32">
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Plus className="text-primary" />
@@ -107,10 +141,13 @@ export const Dashboard: React.FC = () => {
               </button>
             </form>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Links List */}
-        <div className="lg:col-span-2 space-y-4">
+        <motion.div 
+           initial={{ opacity: 0, x: 20 }}
+           animate={{ opacity: 1, x: 0 }}
+           className="lg:col-span-2 space-y-4"
+        >
           {loading ? (
             <div className="flex justify-center py-20">
               <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -121,42 +158,76 @@ export const Dashboard: React.FC = () => {
                <p className="text-white/40 text-xl font-medium">No links found. Create your first one!</p>
             </div>
           ) : (
-            links.map((link) => (
-              <div key={link.id} className="glass p-6 rounded-3xl flex items-center justify-between group hover:border-white/20 transition-all">
-                <div className="flex items-center gap-5">
-                  <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                    <LinkIcon size={24} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold mb-1">{link.title}</h4>
-                    <div className="flex items-center gap-2 text-white/40 text-sm">
-                       <span className="text-primary font-mono bg-primary/10 px-2 py-0.5 rounded">act.link/s/{link.shortCode}</span>
-                       <span>•</span>
-                       <span className="flex items-center gap-1 font-medium"><BarChart3 size={14} /> {link.clicks || 0} clicks</span>
+            links.map((link, idx) => (
+              <motion.div 
+                key={link.id} 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="glass rounded-3xl overflow-hidden group hover:border-white/20 transition-all"
+              >
+                <div className="p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                      <LinkIcon size={24} />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold mb-1">{link.title}</h4>
+                      <div className="flex items-center gap-2 text-white/40 text-sm">
+                        <span className="text-primary font-mono bg-primary/10 px-2 py-0.5 rounded">act.link/s/{link.shortCode}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1 font-medium"><BarChart3 size={14} /> {link.clicks || 0} clicks</span>
+                      </div>
                     </div>
                   </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => fetchAnalytics(link.id)}
+                      disabled={analyzingId === link.id}
+                      className="p-3 hover:bg-white/10 rounded-xl transition-colors text-white/50 hover:text-white flex items-center gap-2"
+                    >
+                      {analyzingId === link.id ? <RefreshCw size={20} className="animate-spin" /> : expandedId === link.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </button>
+                    <a 
+                      href={`http://localhost:3000/s/${link.shortCode}`} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="p-3 hover:bg-white/10 rounded-xl transition-colors text-white/50 hover:text-white"
+                    >
+                      <ExternalLink size={20} />
+                    </a>
+                    <button 
+                      onClick={() => handleDelete(link.id)}
+                      className="p-3 hover:bg-red-500/10 rounded-xl transition-colors text-white/40 hover:text-red-400"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
                 </div>
-                
-                <div className="flex items-center gap-2">
-                  <a 
-                    href={`http://localhost:3000/s/${link.shortCode}`} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="p-3 hover:bg-white/10 rounded-xl transition-colors text-white/50 hover:text-white"
-                  >
-                    <ExternalLink size={20} />
-                  </a>
-                  <button 
-                    onClick={() => handleDelete(link.id)}
-                    className="p-3 hover:bg-red-500/10 rounded-xl transition-colors text-white/40 hover:text-red-400"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              </div>
+
+                <AnimatePresence>
+                  {expandedId === link.id && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="px-6 pb-6 border-t border-white/5"
+                    >
+                       <div className="pt-6">
+                         <h5 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <BarChart3 size={18} className="text-primary" />
+                            Click Analytics
+                         </h5>
+                         <AnalyticsChart data={analytics?.dailyStats || []} />
+                       </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

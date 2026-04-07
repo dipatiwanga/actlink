@@ -1,8 +1,9 @@
 import { Elysia, t } from 'elysia';
 import { authController } from './controllers/auth';
 import { linksController } from './controllers/links';
+import { analyticsController } from './controllers/analytics';
 import { db } from './db';
-import { links } from './db/schema';
+import { clickLogs, links } from './db/schema';
 import { eq } from 'drizzle-orm';
 import { swagger } from '@elysiajs/swagger';
 
@@ -17,6 +18,7 @@ const app = new Elysia()
       tags: [
         { name: 'Auth', description: 'Authentication endpoints' },
         { name: 'Links', description: 'Link management endpoints' },
+        { name: 'Analytics', description: 'Analytics endpoints' },
       ],
     }
   }))
@@ -26,7 +28,7 @@ const app = new Elysia()
     version: '1.0.0',
   }))
   // Redirection route (Public)
-  .get('/s/:shortCode', async ({ params, set }) => {
+  .get('/s/:shortCode', async ({ params, set, headers }) => {
     const { shortCode } = params;
     
     const [link] = await db
@@ -40,11 +42,19 @@ const app = new Elysia()
       return { success: false, message: 'Link not found' };
     }
 
-    // Increment clicks (async)
-    db.update(links)
-      .set({ clicks: (link.clicks || 0) + 1 })
-      .where(eq(links.id, link.id))
-      .execute();
+    // Capture User-Agent and increment clicks (async)
+    Promise.all([
+      db.update(links)
+        .set({ clicks: (link.clicks || 0) + 1 })
+        .where(eq(links.id, link.id))
+        .execute(),
+      db.insert(clickLogs)
+        .values({
+          linkId: link.id,
+          userAgent: headers['user-agent'] || 'unknown',
+        })
+        .execute()
+    ]);
 
     set.redirect = link.url;
   }, {
@@ -55,6 +65,7 @@ const app = new Elysia()
   // Grouped Routes
   .use(authController)
   .use(linksController)
+  .use(analyticsController)
   .listen(3000);
 
 console.log(
