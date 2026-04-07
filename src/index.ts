@@ -1,5 +1,5 @@
 import { Elysia, t } from 'elysia';
-import { authController } from './controllers/auth';
+import { authRoutes } from './routes/auth.route';
 import { linksController } from './controllers/links';
 import { analyticsController } from './controllers/analytics';
 import { profileController } from './controllers/profile';
@@ -64,7 +64,7 @@ const app = new Elysia()
     })
   })
   // Grouped Routes
-  .use(authController)
+  .use(authRoutes)
   .use(linksController)
   .use(analyticsController)
   .use(profileController)
