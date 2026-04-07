@@ -1,8 +1,8 @@
 import { Elysia, t } from 'elysia';
 import { authRoutes } from './routes/auth.route';
-import { linksController } from './controllers/links';
-import { analyticsController } from './controllers/analytics';
-import { profileController } from './controllers/profile';
+import { linksRoutes } from './routes/links.route';
+import { analyticsRoutes } from './routes/analytics.route';
+import { profileRoutes } from './routes/profile.route';
 import { db } from './db';
 import { clickLogs, links } from './db/schema';
 import { eq } from 'drizzle-orm';
@@ -20,6 +20,7 @@ const app = new Elysia()
         { name: 'Auth', description: 'Authentication endpoints' },
         { name: 'Links', description: 'Link management endpoints' },
         { name: 'Analytics', description: 'Analytics endpoints' },
+        { name: 'Profile', description: 'Profile endpoints' },
       ],
     }
   }))
@@ -65,10 +66,10 @@ const app = new Elysia()
   })
   // Grouped Routes
   .use(authRoutes)
-  .use(linksController)
-  .use(analyticsController)
-  .use(profileController)
-  .listen(3000);
+  .use(linksRoutes)
+  .use(analyticsRoutes)
+  .use(profileRoutes)
+  .listen(3001);
 
 console.log(
   `🚀 Actlink API is running at ${app.server?.hostname}:${app.server?.port}`

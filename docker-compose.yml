@@ -19,7 +19,7 @@ services:
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=rootpassword
     ports:
-      - "3306:3306"
+      - "3310:3306"
     networks:
       - dwh_network
 
@@ -34,4 +34,4 @@ services:
 
 networks:
   dwh_network:
-    external: true
+    external: false
