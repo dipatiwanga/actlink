@@ -2,6 +2,7 @@ import { Elysia, t } from 'elysia';
 import { authController } from './controllers/auth';
 import { linksController } from './controllers/links';
 import { analyticsController } from './controllers/analytics';
+import { profileController } from './controllers/profile';
 import { db } from './db';
 import { clickLogs, links } from './db/schema';
 import { eq } from 'drizzle-orm';
@@ -66,6 +67,7 @@ const app = new Elysia()
   .use(authController)
   .use(linksController)
   .use(analyticsController)
+  .use(profileController)
   .listen(3000);
 
 console.log(

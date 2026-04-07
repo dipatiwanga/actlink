@@ -95,11 +95,11 @@ export const authController = new Elysia({ prefix: '/auth' })
   .patch(
     '/profile',
     async ({ body, user, set }) => {
-      const { username, email } = body;
+      const { username, email, bio, avatarUrl } = body;
 
       await db
         .update(users)
-        .set({ username, email })
+        .set({ username, email, bio, avatarUrl })
         .where(eq(users.id, user!.id));
 
       return { success: true, message: 'Profile updated successfully' };
@@ -109,6 +109,8 @@ export const authController = new Elysia({ prefix: '/auth' })
       body: t.Object({
         username: t.String(),
         email: t.String({ format: 'email' }),
+        bio: t.Optional(t.String()),
+        avatarUrl: t.Optional(t.String()),
       }),
       detail: {
         tags: ['Auth'],

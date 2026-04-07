@@ -5,6 +5,8 @@ export const users = mysqlTable('users', {
   username: varchar('username', { length: 50 }).notNull().unique(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   password: varchar('password', { length: 255 }).notNull(),
+  bio: text('bio'),
+  avatarUrl: text('avatar_url'),
   createdAt: timestamp('created_at').defaultNow(),
 });
 
