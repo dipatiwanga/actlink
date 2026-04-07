@@ -4,8 +4,22 @@ import { linksController } from './controllers/links';
 import { db } from './db';
 import { links } from './db/schema';
 import { eq } from 'drizzle-orm';
+import { swagger } from '@elysiajs/swagger';
 
 const app = new Elysia()
+  .use(swagger({
+    documentation: {
+      info: {
+        title: 'Actlink API Documentation',
+        version: '1.0.0',
+        description: 'API for link management and redirection service',
+      },
+      tags: [
+        { name: 'Auth', description: 'Authentication endpoints' },
+        { name: 'Links', description: 'Link management endpoints' },
+      ],
+    }
+  }))
   .get('/', () => ({
     status: 'ok',
     message: 'Welcome to Actlink API',

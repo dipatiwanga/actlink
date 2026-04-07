@@ -41,6 +41,10 @@ export const authController = new Elysia({ prefix: '/auth' })
         email: t.String({ format: 'email' }),
         password: t.String({ minLength: 8 }),
       }),
+      detail: {
+        tags: ['Auth'],
+        summary: 'Register a new user',
+      },
     }
   )
   .post(
@@ -82,5 +86,9 @@ export const authController = new Elysia({ prefix: '/auth' })
         email: t.String({ format: 'email' }),
         password: t.String(),
       }),
+      detail: {
+        tags: ['Auth'],
+        summary: 'Login user and get token',
+      },
     }
   );

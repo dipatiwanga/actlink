@@ -15,6 +15,11 @@ export const linksController = new Elysia({ prefix: '/links' })
       .where(eq(links.userId, user!.id));
 
     return { success: true, data: userLinks };
+  }, {
+    detail: {
+      tags: ['Links'],
+      summary: 'List all links for authenticated user',
+    }
   })
   .post(
     '/',
@@ -43,6 +48,10 @@ export const linksController = new Elysia({ prefix: '/links' })
         url: t.String({ format: 'uri' }),
         shortCode: t.Optional(t.String({ maxLength: 10 })),
       }),
+      detail: {
+        tags: ['Links'],
+        summary: 'Create a new short link',
+      },
     }
   )
   .patch(
@@ -69,6 +78,10 @@ export const linksController = new Elysia({ prefix: '/links' })
         title: t.Optional(t.String()),
         url: t.Optional(t.String({ format: 'uri' })),
       }),
+      detail: {
+        tags: ['Links'],
+        summary: 'Update an existing link',
+      },
     }
   )
   .delete('/:id', async ({ params, user }) => {
@@ -85,5 +98,9 @@ export const linksController = new Elysia({ prefix: '/links' })
 
     return { success: true, message: 'Link deleted' };
   }, {
-    params: t.Object({ id: t.String() })
+    params: t.Object({ id: t.String() }),
+    detail: {
+      tags: ['Links'],
+      summary: 'Delete a link',
+    },
   });
