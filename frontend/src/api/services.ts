@@ -18,6 +18,14 @@ export const authService = {
   isAuthenticated: () => {
     return !!localStorage.getItem('token');
   },
+  updateProfile: async (data: any) => {
+    const response = await apiClient.patch('/auth/profile', data);
+    return response.data;
+  },
+  updatePassword: async (data: any) => {
+    const response = await apiClient.patch('/auth/password', data);
+    return response.data;
+  },
 };
 
 export const linkService = {

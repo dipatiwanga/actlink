@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../api/services';
-import { Link as LinkIcon, LogOut } from 'lucide-react';
+import { Link as LinkIcon, LogOut, Settings } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +23,10 @@ export const Navbar: React.FC = () => {
         {isAuthenticated ? (
           <>
             <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors">Dashboard</Link>
+            <Link to="/settings" className="text-white/80 hover:text-white transition-colors flex items-center gap-1">
+              <Settings size={18} />
+              Settings
+            </Link>
             <button 
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all border border-red-500/20"

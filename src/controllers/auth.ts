@@ -91,4 +91,65 @@ export const authController = new Elysia({ prefix: '/auth' })
         summary: 'Login user and get token',
       },
     }
+  )
+  .patch(
+    '/profile',
+    async ({ body, user, set }) => {
+      const { username, email } = body;
+
+      await db
+        .update(users)
+        .set({ username, email })
+        .where(eq(users.id, user!.id));
+
+      return { success: true, message: 'Profile updated successfully' };
+    },
+    {
+      isAuth: true,
+      body: t.Object({
+        username: t.String(),
+        email: t.String({ format: 'email' }),
+      }),
+      detail: {
+        tags: ['Auth'],
+        summary: 'Update user profile',
+      },
+    }
+  )
+  .patch(
+    '/password',
+    async ({ body, user, set }) => {
+      const { oldPassword, newPassword } = body;
+
+      const [dbUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, user!.id))
+        .limit(1);
+
+      const isMatch = await Bun.password.verify(oldPassword, dbUser.password);
+      if (!isMatch) {
+        set.status = 400;
+        return { success: false, message: 'Invalid old password' };
+      }
+
+      const hashedPassword = await Bun.password.hash(newPassword);
+      await db
+        .update(users)
+        .set({ password: hashedPassword })
+        .where(eq(users.id, user!.id));
+
+      return { success: true, message: 'Password updated successfully' };
+    },
+    {
+      isAuth: true,
+      body: t.Object({
+        oldPassword: t.String(),
+        newPassword: t.String({ minLength: 8 }),
+      }),
+      detail: {
+        tags: ['Auth'],
+        summary: 'Update user password',
+      },
+    }
   );
