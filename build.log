@@ -1,0 +1,106 @@
+--progress is a global compose flag, better use `docker compose --progress xx build ...
+ Image actlink-frontend Building 
+ Image actlink-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 904B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 370B done
+#2 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 2)
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/oven/bun:latest
+#3 DONE 0.0s
+
+#4 [internal] load metadata for docker.io/library/nginx:alpine
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 2B done
+#5 DONE 0.0s
+
+#6 [build-stage 1/6] FROM docker.io/oven/bun:latest@sha256:0733e50325078969732ebe3b15ce4c4be5082f18c4ac1a0f0ca4839c2e4e42a7
+#6 resolve docker.io/oven/bun:latest@sha256:0733e50325078969732ebe3b15ce4c4be5082f18c4ac1a0f0ca4839c2e4e42a7 0.0s done
+#6 DONE 0.0s
+
+#7 [stage-1 1/2] FROM docker.io/library/nginx:alpine@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1
+#7 resolve docker.io/library/nginx:alpine@sha256:e7257f1ef28ba17cf7c248cb8ccf6f0c6e0228ab9c315c152f9c203cd34cf6d1 0.0s done
+#7 CACHED
+
+#8 [internal] load build context
+#8 transferring context: 887B done
+#8 DONE 0.0s
+
+#9 [build-stage 3/6] COPY package.json bun.lock* ./
+#9 CACHED
+
+#10 [build-stage 4/6] RUN bun install
+#10 CACHED
+
+#11 [build-stage 2/6] WORKDIR /app
+#11 CACHED
+
+#12 [build-stage 5/6] COPY . .
+#12 CACHED
+
+#13 [build-stage 6/6] RUN bun run build
+#13 0.119 $ tsc -b && vite build
+#13 1.949 src/App.tsx(2,66): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+#13 1.949 src/api/client.ts(1,19): error TS2307: Cannot find module 'axios' or its corresponding type declarations.
+#13 1.949 src/api/client.ts(13,37): error TS7006: Parameter 'config' implicitly has an 'any' type.
+#13 1.949 src/api/client.ts(23,4): error TS7006: Parameter 'response' implicitly has an 'any' type.
+#13 1.949 src/api/client.ts(24,4): error TS7006: Parameter 'error' implicitly has an 'any' type.
+#13 1.949 src/components/AnalyticsChart.tsx(3,3): error TS6133: 'LineChart' is declared but its value is never read.
+#13 1.949 src/components/AnalyticsChart.tsx(4,3): error TS6133: 'Line' is declared but its value is never read.
+#13 1.949 src/components/AnalyticsChart.tsx(12,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+#13 1.949 src/components/AnalyticsChart.tsx(44,29): error TS7006: Parameter 'str' implicitly has an 'any' type.
+#13 1.949 src/components/Navbar.tsx(2,35): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+#13 1.949 src/components/Navbar.tsx(4,52): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/Dashboard.tsx(6,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/Dashboard.tsx(7,41): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+#13 1.949 src/pages/LandingPage.tsx(2,22): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+#13 1.949 src/pages/LandingPage.tsx(3,10): error TS6133: 'Layout' is declared but its value is never read.
+#13 1.949 src/pages/LandingPage.tsx(3,44): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/LandingPage.tsx(4,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+#13 1.949 src/pages/LoginPage.tsx(2,35): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+#13 1.949 src/pages/LoginPage.tsx(4,48): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/NotFoundPage.tsx(2,22): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+#13 1.949 src/pages/NotFoundPage.tsx(3,35): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/NotFoundPage.tsx(4,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+#13 1.949 src/pages/RegisterPage.tsx(2,35): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+#13 1.949 src/pages/RegisterPage.tsx(4,57): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/SettingsPage.tsx(3,61): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+#13 1.949 src/pages/SettingsPage.tsx(4,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+#13 ERROR: process "/bin/sh -c bun run build" did not complete successfully: exit code: 2
+------
+ > [build-stage 6/6] RUN bun run build:
+1.949 src/pages/LandingPage.tsx(4,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+1.949 src/pages/LoginPage.tsx(2,35): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+1.949 src/pages/LoginPage.tsx(4,48): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+1.949 src/pages/NotFoundPage.tsx(2,22): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+1.949 src/pages/NotFoundPage.tsx(3,35): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+1.949 src/pages/NotFoundPage.tsx(4,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+1.949 src/pages/RegisterPage.tsx(2,35): error TS2307: Cannot find module 'react-router-dom' or its corresponding type declarations.
+1.949 src/pages/RegisterPage.tsx(4,57): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+1.949 src/pages/SettingsPage.tsx(3,61): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+1.949 src/pages/SettingsPage.tsx(4,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
+------
+Dockerfile:10
+
+--------------------
+
+   8 |     
+
+   9 |     COPY . .
+
+  10 | >>> RUN bun run build
+
+  11 |     
+
+  12 |     # Production stage
+
+--------------------
+
+failed to solve: process "/bin/sh -c bun run build" did not complete successfully: exit code: 2
+
