@@ -69,7 +69,7 @@ const app = new Elysia()
   .use(linksRoutes)
   .use(analyticsRoutes)
   .use(profileRoutes)
-  .listen(3001);
+  .listen({ port: process.env.PORT || 3000, hostname: '0.0.0.0' });
 
 console.log(
   `🚀 Actlink API is running at ${app.server?.hostname}:${app.server?.port}`
